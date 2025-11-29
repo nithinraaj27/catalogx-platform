@@ -6,7 +6,7 @@
 
 ### **Core Framework**
 
-- Spring Boot **3.3.x**
+- Spring Boot **3.5.x**
 - Spring Cloud **2023.0.x**
 
 ### **Service Architecture**
