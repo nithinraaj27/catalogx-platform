@@ -1,15 +1,12 @@
 package com.catalogx.inventoryservice.controller;
 
 import com.catalogx.inventoryservice.dto.*;
-import com.catalogx.inventoryservice.entity.Inventory;
 import com.catalogx.inventoryservice.service.InventoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.http.HttpResponse;
 import java.util.List;
 
 @RestController
