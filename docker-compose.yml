@@ -16,5 +16,20 @@ services:
       - product_data:/var/lib/postgresql/data
       - ./product-service/src/main/resources/db/migration:/docker-entrypoint-initdb.d
 
+  inventory-db:
+    image: postgres:16
+    container_name: inventory-db
+    restart: always
+    environment:
+      POSTGRES_USER: inventoryuser
+      POSTGRES_PASSWORD: inventorypass
+      POSTGRES_DB: inventorydb
+    ports:
+      - "5434:5432"
+    volumes:
+      - inventory_data:/var/lib/postgresql/data
+      - ./inventory-service/src/main/resources/db/migration:/docker-entrypoint-initdb.d
+
 volumes:
   product_data:
+  inventory_data:
