@@ -1,5 +1,7 @@
 package com.catalogx.inventoryservice.implementation;
 
+import com.catalogx.inventoryservice.InventoryEventProducer;
+import com.catalogx.inventoryservice.InventoryUpdateEvent;
 import com.catalogx.inventoryservice.dto.InventoryRequest;
 import com.catalogx.inventoryservice.dto.InventoryResponse;
 import com.catalogx.inventoryservice.dto.ReservationRequest;
@@ -25,6 +27,7 @@ public class InventoryServiceImpl implements InventoryService {
 
     private final InventoryRepository inventoryRepository;
     private final InventoryReservationRepository reservationRepository;
+    private final InventoryEventProducer eventProducer;
 
 
     @Override
@@ -45,7 +48,21 @@ public class InventoryServiceImpl implements InventoryService {
 
         Inventory saved = inventoryRepository.save(inventory);
 
-        return inventoryRepository.save(inventory).toResponse();
+
+        InventoryResponse response = saved.toResponse();
+
+        eventProducer.publish(
+                response.sku(),
+                new InventoryUpdateEvent(
+                        response.sku(),
+                        response.totalQuantity(),
+                        response.reservedQuantity(),
+                        response.availableQuantity(),
+                        response.lastUpdatedAt()
+                )
+        );
+
+        return response;
     }
 
     @Override
@@ -92,7 +109,22 @@ public class InventoryServiceImpl implements InventoryService {
                 .reservedAt(LocalDateTime.now())
                 .build();
 
-        return reservationRepository.save(reservation).toResponse();
+        InventoryResponse updated = inventory.toResponse();
+
+        InventoryReservation savedReservation = reservationRepository.save(reservation);
+
+        eventProducer.publish(
+                updated.sku(),
+                new InventoryUpdateEvent(
+                        updated.sku(),
+                        updated.totalQuantity(),
+                        updated.reservedQuantity(),
+                        updated.availableQuantity(),
+                        updated.lastUpdatedAt()
+                )
+        );
+
+        return savedReservation.toResponse();
     }
 
     @Override
@@ -108,6 +140,19 @@ public class InventoryServiceImpl implements InventoryService {
                 inventory.getReservedQuantity() - quantity
         );
         inventory.setUpdatedAt(LocalDateTime.now());
+
+        InventoryResponse updated = inventory.toResponse();
+
+        eventProducer.publish(
+                updated.sku(),
+                new InventoryUpdateEvent(
+                        updated.sku(),
+                        updated.totalQuantity(),
+                        updated.reservedQuantity(),
+                        updated.availableQuantity(),
+                        updated.lastUpdatedAt()
+                )
+        );
 
         inventoryRepository.save(inventory);
 
