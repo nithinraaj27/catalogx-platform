@@ -8,6 +8,7 @@ import com.catalogx.inventoryservice.dto.ReservationRequest;
 import com.catalogx.inventoryservice.dto.ReservationResponse;
 import com.catalogx.inventoryservice.entity.Inventory;
 import com.catalogx.inventoryservice.entity.InventoryReservation;
+import com.catalogx.inventoryservice.exception.DuplicateValueException;
 import com.catalogx.inventoryservice.exception.ResourceNotFoundException;
 import com.catalogx.inventoryservice.repository.InventoryRepository;
 import com.catalogx.inventoryservice.repository.InventoryReservationRepository;
@@ -32,9 +33,42 @@ public class InventoryServiceImpl implements InventoryService {
 
     @Override
     @Transactional
-    public InventoryResponse createOrUpdate(InventoryRequest request) {
+    public InventoryResponse createInventory(InventoryRequest request) {
 
-        log.info("Request Recieved for Creating and Updating the Inventory");
+        log.info("Adding New Inventory for SKU: {}", request.sku());
+
+        if(inventoryRepository.findBySku(request.sku()).isPresent()){
+            throw new DuplicateValueException("SKU Already Exists, Please provide new SKU");
+        }
+
+        Inventory inventory = Inventory.builder()
+                .sku(request.sku())
+                .totalQuantity(request.totalQuantity())
+                .reservedQuantity(0)
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        Inventory saved = inventoryRepository.save(inventory);
+        InventoryResponse response = saved.toResponse();
+
+        eventProducer.publish(
+                response.sku(),
+                new InventoryUpdateEvent(
+                        response.sku(),
+                        response.totalQuantity(),
+                        response.reservedQuantity(),
+                        response.availableQuantity(),
+                        response.lastUpdatedAt()
+                )
+        );
+
+        return response;
+    }
+
+    @Override
+    public InventoryResponse updateInventory(InventoryRequest request) {
+        log.info("Updaing Inventory for SKU: {}", request.sku());
+
         Inventory inventory = inventoryRepository.findBySku(request.sku())
                 .orElse(Inventory.builder()
                         .sku(request.sku())
@@ -44,11 +78,8 @@ public class InventoryServiceImpl implements InventoryService {
                         .build());
 
         inventory.setTotalQuantity(request.totalQuantity());
-        inventory.setUpdatedAt(LocalDateTime.now());
 
         Inventory saved = inventoryRepository.save(inventory);
-
-
         InventoryResponse response = saved.toResponse();
 
         eventProducer.publish(

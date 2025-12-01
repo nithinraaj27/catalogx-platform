@@ -17,9 +17,15 @@ public class InventoryController {
     private final InventoryService inventoryService;
 
     @PostMapping
-    public ResponseEntity<APIResponse<InventoryResponse>> createORUpdate(@RequestBody InventoryRequest request)
+    public ResponseEntity<APIResponse<InventoryResponse>> create(@RequestBody InventoryRequest request)
     {
-        return ResponseEntity.ok(APIResponse.success("Inventory Updated Successfully", inventoryService.createOrUpdate(request)));
+        return ResponseEntity.ok(APIResponse.success("Inventory Created Successfully", inventoryService.createInventory(request)));
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<APIResponse<InventoryResponse>> update(@RequestBody InventoryRequest request)
+    {
+        return ResponseEntity.ok(APIResponse.success("Inventory Updated Successfully", inventoryService.updateInventory(request)));
     }
 
     @GetMapping("/{sku}")

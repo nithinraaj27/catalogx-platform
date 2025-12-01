@@ -4,13 +4,14 @@ import com.catalogx.inventoryservice.dto.InventoryRequest;
 import com.catalogx.inventoryservice.dto.InventoryResponse;
 import com.catalogx.inventoryservice.dto.ReservationRequest;
 import com.catalogx.inventoryservice.dto.ReservationResponse;
-import com.catalogx.inventoryservice.entity.InventoryReservation;
 
 import java.util.List;
 
 public interface InventoryService {
 
-    InventoryResponse createOrUpdate(InventoryRequest request);
+    InventoryResponse createInventory(InventoryRequest request);
+
+    InventoryResponse updateInventory(InventoryRequest request);
 
     InventoryResponse getInventory(String sku);
 

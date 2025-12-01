@@ -4,8 +4,9 @@ server:
 spring:
   application:
     name: inventory-service
+
   datasource:
-    url: jdbc:postgresql://localhost:5434/inventorydb
+    url: jdbc:postgresql://inventory-db:5432/inventorydb
     username: inventoryuser
     password: inventorypass
 
@@ -24,12 +25,8 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
 
-  cloud:
-    config:
-      enabled: false
-
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka:9092
 
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -49,8 +46,9 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://eureka-server:8761/eureka
+
   instance:
-    hostname: inventory-service
     prefer-ip-address: false
-    instance-id: ${spring.application.name}:${server.port}
+    hostname: inventory-service
+    instance-id: inventory-service:${server.port}
