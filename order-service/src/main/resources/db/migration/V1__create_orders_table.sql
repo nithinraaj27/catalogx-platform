@@ -1,0 +1,8 @@
+CREATE TABLE orders (
+    order_id BIGSERIAL PRIMARY KEY,
+    sku VARCHAR(100) NOT NULL,
+    quantity INTEGER NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);

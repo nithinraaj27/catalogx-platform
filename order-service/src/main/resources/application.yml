@@ -1,13 +1,15 @@
 server:
-  port: 9002
+  port: 9003
 
 spring:
   application:
-    name: inventory-service
+    name: order-service
+
   datasource:
-    url: jdbc:postgresql://localhost:5434/inventorydb
-    username: inventoryuser
-    password: inventorypass
+    url: jdbc:postgresql://localhost:5436/orderdb
+    username: orderuser
+    password: orderpass
+    driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
@@ -28,6 +30,11 @@ spring:
     config:
       enabled: false
 
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+
+
   kafka:
     bootstrap-servers: localhost:9092
 
@@ -39,18 +46,25 @@ spring:
         enable.idempotence: false
 
     consumer:
-      group-id: inventory-service-group
+      group-id: order-service-group
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "*"
+        spring.json.value.default.type: com.catalogx.orderservice.events.InventoryUpdateEvent
+
+    listener:
+      ack-mode: record
+      missing-topics-fatal: false
+
 
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
   instance:
-    hostname: inventory-service
     prefer-ip-address: false
+    hostname: order-service
     instance-id: ${spring.application.name}:${server.port}
+
