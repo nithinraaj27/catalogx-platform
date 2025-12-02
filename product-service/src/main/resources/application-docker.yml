@@ -1,14 +1,14 @@
 server:
-  port: 9003
+  port: 9001
 
 spring:
   application:
-    name: order-service
+    name: product-service
 
   datasource:
-    url: jdbc:postgresql://localhost:5436/orderdb
-    username: orderuser
-    password: orderpass
+    url: jdbc:postgresql://product-db:5432/productdb
+    username: productuser
+    password: productpass
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -26,17 +26,8 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
 
-  cloud:
-    config:
-      enabled: false
-
-  jackson:
-    serialization:
-      WRITE_DATES_AS_TIMESTAMPS: false
-
-
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka:9092
 
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -46,25 +37,19 @@ spring:
         enable.idempotence: false
 
     consumer:
-      group-id: order-service-group
+      group-id: product-service-group
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "*"
-        spring.json.value.default.type: com.catalogx.orderservice.dto.InventoryUpdateEvent
-
-    listener:
-      ack-mode: record
-      missing-topics-fatal: false
-
 
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://eureka-server:8761/eureka
+
   instance:
     prefer-ip-address: false
-    hostname: order-service
-    instance-id: ${spring.application.name}:${server.port}
-
+    hostname: product-service
+    instance-id: product-service:${server.port}

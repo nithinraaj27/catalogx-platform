@@ -1,7 +1,7 @@
 package com.catalogx.inventoryservice.implementation;
 
-import com.catalogx.inventoryservice.InventoryEventProducer;
-import com.catalogx.inventoryservice.InventoryUpdateEvent;
+import com.catalogx.inventoryservice.events.InventoryEventProducer;
+import com.catalogx.inventoryservice.dto.InventoryUpdateEvent;
 import com.catalogx.inventoryservice.dto.InventoryRequest;
 import com.catalogx.inventoryservice.dto.InventoryResponse;
 import com.catalogx.inventoryservice.dto.ReservationRequest;
@@ -70,14 +70,19 @@ public class InventoryServiceImpl implements InventoryService {
         log.info("Updaing Inventory for SKU: {}", request.sku());
 
         Inventory inventory = inventoryRepository.findBySku(request.sku())
-                .orElse(Inventory.builder()
-                        .sku(request.sku())
-                        .totalQuantity(0)
-                        .reservedQuantity(0)
-                        .updatedAt(LocalDateTime.now())
-                        .build());
+                .orElseThrow(() -> new ResourceNotFoundException("SKU not found"));
 
-        inventory.setTotalQuantity(request.totalQuantity());
+        int existingTotal = inventory.getTotalQuantity();
+
+        int delta = request.totalQuantity();
+
+        int newTotal = existingTotal + delta;
+
+        int reserved = inventory.getReservedQuantity();
+
+        int newAvailable = newTotal - reserved;
+
+        inventory.setTotalQuantity(newTotal);
 
         Inventory saved = inventoryRepository.save(inventory);
         InventoryResponse response = saved.toResponse();
@@ -92,6 +97,9 @@ public class InventoryServiceImpl implements InventoryService {
                         response.lastUpdatedAt()
                 )
         );
+
+        log.info("Restock Complete: OldTotal={}, Added={}, NewTotal={}, Reserved={}, Available={}",
+                existingTotal, delta, newTotal, reserved, newAvailable);
 
         return response;
     }
@@ -167,10 +175,22 @@ public class InventoryServiceImpl implements InventoryService {
         Inventory inventory = inventoryRepository.findBySku(sku)
                 .orElseThrow(() -> new RuntimeException("SKU not found"));
 
-        inventory.setReservedQuantity(
-                inventory.getReservedQuantity() - quantity
-        );
+        int currentReserved = inventory.getReservedQuantity();
+
+        if(quantity > currentReserved)
+        {
+            throw new ResourceNotFoundException(
+                    "Cannot release more stock (" + quantity +
+                            ") than reserved (" + currentReserved + ") for SKU: " + sku
+            );
+        }
+        int newReserved = currentReserved - quantity;
+        inventory.setReservedQuantity(newReserved);
+
+        int newAvailable = inventory.getTotalQuantity() - newReserved;
         inventory.setUpdatedAt(LocalDateTime.now());
+
+        log.info("Updated inventory for sku {} => reserved: {}, available: {}", sku, newReserved, newAvailable);
 
         InventoryResponse updated = inventory.toResponse();
 

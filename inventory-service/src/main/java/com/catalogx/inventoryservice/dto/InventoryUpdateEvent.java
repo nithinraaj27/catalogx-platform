@@ -1,4 +1,4 @@
-package com.catalogx.inventoryservice;
+package com.catalogx.inventoryservice.dto;
 
 import java.time.LocalDateTime;
 

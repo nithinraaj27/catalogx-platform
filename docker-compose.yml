@@ -96,6 +96,28 @@ services:
       - micro-network
 
   # ======================
+  # PRODUCT SERVICE
+  # ======================
+  product-service:
+    build: ./product-service
+    container_name: product-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://product-db:5432/productdb
+      SPRING_DATASOURCE_USERNAME: productuser
+      SPRING_DATASOURCE_PASSWORD: productpass
+
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      - product-db
+      - kafka
+      - eureka-server
+    ports:
+      - "9001:9001"
+    networks:
+      - micro-network
+
+  # ======================
   # INVENTORY SERVICE
   # ======================
   inventory-service:

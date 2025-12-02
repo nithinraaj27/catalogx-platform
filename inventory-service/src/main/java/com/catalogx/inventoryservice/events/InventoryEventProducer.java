@@ -1,4 +1,4 @@
-package com.catalogx.inventoryservice;
+package com.catalogx.inventoryservice.events;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
