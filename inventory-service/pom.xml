@@ -62,18 +62,58 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- Spring Kafka -->
+        <!-- Spring Kafka (Duplicate removed, keeping the first one) -->
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
         </dependency>
 
-        <!-- JSON serializer for events -->
+        <!-- Micrometer tracing -->
         <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing</artifactId>
         </dependency>
 
+        <!-- Bridge for Brave (Zipkin) -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-brave</artifactId>
+        </dependency>
+
+        <!-- Zipkin reporter -->
+        <dependency>
+            <groupId>io.zipkin.reporter2</groupId>
+            <artifactId>zipkin-reporter-brave</artifactId>
+        </dependency>
+
+        <!-- FIX: Add explicit Zipkin Sender (UrlConnection is common) -->
+        <dependency>
+            <groupId>io.zipkin.reporter2</groupId>
+            <artifactId>zipkin-sender-urlconnection</artifactId>
+        </dependency>
+
+        <!-- FIX: Add AOP Starter for Automatic Instrumentation of methods and Kafka listeners/producers -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+        <!-- Actuator (required for exposing metrics & traces) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+
+        <!-- Add Observation core library (highly recommended for Spring Boot 3 tracing) -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-observation</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

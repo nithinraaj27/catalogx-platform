@@ -54,3 +54,9 @@ eureka:
     hostname: inventory-service
     prefer-ip-address: false
     instance-id: ${spring.application.name}:${server.port}
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    com.catalogx.productservice: DEBUG

@@ -64,14 +64,12 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-            <!-- REMOVED: Version is now inherited from <dependencyManagement> -->
         </dependency>
 
         <!-- Config Client -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-config</artifactId>
-            <!-- REMOVED: Version is now inherited from <dependencyManagement> -->
         </dependency>
 
         <!-- Validation -->
@@ -94,7 +92,7 @@
             <scope>test</scope>
         </dependency>
 
-
+        <!-- Flyway -->
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
@@ -104,23 +102,62 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
+
+        <!-- Kafka -->
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
         </dependency>
 
+        <!-- OpenFeign for HTTP Calls to other services -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
 
+        <!-- Micrometer tracing -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-dependencies</artifactId>
-            <version>2023.0.3</version>
-            <type>pom</type>
-            <scope>import</scope>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing</artifactId>
         </dependency>
+
+        <!-- Bridge for Brave (Zipkin) -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-brave</artifactId>
+        </dependency>
+
+        <!-- Zipkin reporter -->
+        <dependency>
+            <groupId>io.zipkin.reporter2</groupId>
+            <artifactId>zipkin-reporter-brave</artifactId>
+        </dependency>
+
+        <!-- FIX: Add explicit Zipkin Sender (UrlConnection is common) -->
+        <dependency>
+            <groupId>io.zipkin.reporter2</groupId>
+            <artifactId>zipkin-sender-urlconnection</artifactId>
+        </dependency>
+
+        <!-- FIX: Add AOP Starter for Automatic Instrumentation of methods and Feign clients -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+        <!-- Actuator (required for exposing metrics & traces) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- WebFlux/WebClient -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+
+        <!-- REMOVED: Duplicate and misplaced spring-cloud-dependencies -->
     </dependencies>
 
     <build>
