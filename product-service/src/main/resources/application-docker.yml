@@ -43,6 +43,9 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "*"
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
 
 eureka:
   client:
@@ -53,3 +56,18 @@ eureka:
     prefer-ip-address: false
     hostname: product-service
     instance-id: product-service:${server.port}
+
+management:
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans
+
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
