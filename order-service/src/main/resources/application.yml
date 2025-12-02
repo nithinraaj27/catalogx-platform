@@ -52,7 +52,7 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "*"
-        spring.json.value.default.type: com.catalogx.orderservice.events.InventoryUpdateEvent
+        spring.json.value.default.type: com.catalogx.orderservice.dto.InventoryUpdateEvent
 
     listener:
       ack-mode: record

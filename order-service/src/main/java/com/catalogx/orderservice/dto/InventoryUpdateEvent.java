@@ -1,4 +1,4 @@
-package com.catalogx.orderservice.events;
+package com.catalogx.orderservice.dto;
 
 import java.time.LocalDateTime;
 

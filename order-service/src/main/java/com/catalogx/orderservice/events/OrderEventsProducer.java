@@ -1,5 +1,6 @@
 package com.catalogx.orderservice.events;
 
+import com.catalogx.orderservice.dto.OrderEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -11,9 +12,9 @@ public class OrderEventsProducer {
     private final KafkaTemplate<String , Object> kafkaTemplate;
     private static final String TOPIC = "order-events";
 
-    public void publish(String key, Object event)
+    public void publish(OrderEvent event)
     {
-        kafkaTemplate.send(TOPIC, key, event).whenComplete((result, ex) ->{
+        kafkaTemplate.send(TOPIC, event.orderId().toString(), event).whenComplete((result, ex) ->{
             if(ex == null)
             {
                 System.out.println("📨 Message sent successfully to topic: "

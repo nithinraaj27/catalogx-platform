@@ -4,13 +4,11 @@ import com.catalogx.orderservice.client.InventoryClient;
 import com.catalogx.orderservice.dto.OrderRequest;
 import com.catalogx.orderservice.dto.OrderResponse;
 import com.catalogx.orderservice.dto.ReservationRequest;
-import com.catalogx.orderservice.dto.ReservationResponse;
 import com.catalogx.orderservice.entity.InventoryProjection;
 import com.catalogx.orderservice.entity.Order;
 import com.catalogx.orderservice.entity.OrderStatus;
-import com.catalogx.orderservice.events.OrderCreatedEvent;
+import com.catalogx.orderservice.dto.OrderEvent;
 import com.catalogx.orderservice.events.OrderEventsProducer;
-import com.catalogx.orderservice.events.OrderStatusUpdatedEvent;
 import com.catalogx.orderservice.exception.OrderNotFoundException;
 import com.catalogx.orderservice.repository.InventoryProjectionRepository;
 import com.catalogx.orderservice.repository.OrderRepository;
@@ -18,10 +16,8 @@ import com.catalogx.orderservice.service.OrderService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -61,8 +57,8 @@ public class OrderServiceImpl implements OrderService {
             return rejectedOrder.toResponse();
         }
 
-        log.info("3. Create Pre-ORder");
-        Order preOrder = Order.builder()
+        log.info("3. Create Pre-Order");
+        Order order = Order.builder()
                 .sku(request.sku())
                 .quantity(request.quantity())
                 .status(OrderStatus.PENDING_RESERVATION)
@@ -70,14 +66,14 @@ public class OrderServiceImpl implements OrderService {
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        orderRepository.save(preOrder);
+        orderRepository.save(order);
 
-        log.info("Order id : {}",String.valueOf(preOrder.getOrderId()));
+        log.info("Order id : {}",String.valueOf(order.getOrderId()));
         log.info("4. Try reserving stock in inventory-service");
         ReservationRequest reservationRequest = new ReservationRequest(
                 request.sku(),
                 request.quantity(),
-                String.valueOf(preOrder.getOrderId())
+                String.valueOf(order.getOrderId())
         );
 
 
@@ -91,36 +87,28 @@ public class OrderServiceImpl implements OrderService {
                     ex.getMessage()
             );
 
-            preOrder.setStatus(OrderStatus.REJECTED);
-            preOrder.setUpdatedAt(LocalDateTime.now());
-            orderRepository.save(preOrder);
-            return preOrder.toResponse();
+            order.setStatus(OrderStatus.REJECTED);
+            order.setUpdatedAt(LocalDateTime.now());
+            orderRepository.save(order);
+            return order.toResponse();
         }
 
-        log.info("4. Reservation successful → Create PENDING order");
-        Order order = Order.builder()
-                .sku(request.sku())
-                .quantity(request.quantity())
-                .status(OrderStatus.PENDING)
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build();
+        log.info("5. Reservation successful → Create PENDING order");
+        order.setStatus(OrderStatus.PENDING);
+        order.setUpdatedAt(LocalDateTime.now());
 
         orderRepository.save(order);
 
-        log.info("5. Publish OrderCreated Event");
-        preOrder.setStatus(OrderStatus.PENDING);
-        preOrder.setUpdatedAt(LocalDateTime.now());
-        orderRepository.save(preOrder);
-
-        OrderCreatedEvent event = new OrderCreatedEvent(
-                preOrder.getOrderId(),
-                preOrder.getSku(),
-                preOrder.getQuantity(),
-                preOrder.getStatus().name()
+        log.info("6. Publish Order Event");
+        OrderEvent event = new OrderEvent(
+                order.getOrderId(),
+                order.getSku(),
+                order.getQuantity(),
+                order.getStatus(),
+                LocalDateTime.now()
         );
 
-        orderEventsProducer.publish("Order-Created", event);
+        orderEventsProducer.publish(event);
 
         return order.toResponse();
     }
@@ -140,7 +128,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderResponse> getAllOrders() {
 
-        log.info("Request recieved for getting all the orders");
+        log.info("Request received for getting all the orders");
         return orderRepository.findAll()
                 .stream()
                 .map(Order::toResponse)
@@ -167,20 +155,23 @@ public class OrderServiceImpl implements OrderService {
         }
 
         // 2. Update order fields
-        order.setStatus(OrderStatus.valueOf(status.toUpperCase()));
+        OrderStatus newStatus = OrderStatus.valueOf(status.toUpperCase());
+        order.setStatus(newStatus);
         order.setUpdatedAt(LocalDateTime.now());
 
         // 3. Save the order
         orderRepository.save(order);
 
         // 4. Publish event
-        OrderStatusUpdatedEvent event = new OrderStatusUpdatedEvent(
+        OrderEvent event = new OrderEvent(
                 order.getOrderId(),
-                order.getStatus().name(),
-                "Status Updated"
+                order.getSku(),
+                order.getQuantity(),
+                newStatus,
+                LocalDateTime.now()
         );
 
-        orderEventsProducer.publish("Order-status-updated", event);
+        orderEventsProducer.publish(event);
 
         log.info("Order {} updated to status {}", order.getOrderId(), status);
     }

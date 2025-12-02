@@ -26,6 +26,23 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
 
+  kafka:
+    bootstrap-servers: kafka:9092
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+        enable.idempotence: false
+
+    consumer:
+      group-id: product-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
