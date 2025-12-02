@@ -105,18 +105,14 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://product-db:5432/productdb
       SPRING_DATASOURCE_USERNAME: productuser
       SPRING_DATASOURCE_PASSWORD: productpass
-
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-
     depends_on:
       - product-db
       - kafka
       - eureka-server
-
     ports:
       - "9001:9001"
-
     networks:
       - micro-network
 
@@ -130,7 +126,6 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://inventory-db:5432/inventorydb
       SPRING_DATASOURCE_USERNAME: inventoryuser
       SPRING_DATASOURCE_PASSWORD: inventorypass
-
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     depends_on:
@@ -152,7 +147,6 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://order-db:5432/orderdb
       SPRING_DATASOURCE_USERNAME: orderuser
       SPRING_DATASOURCE_PASSWORD: orderpass
-
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     depends_on:
