@@ -7,6 +7,7 @@ public record InventoryUpdateEvent(
         Integer totalQuantity,
         Integer reservedQuantity,
         Integer availableQuantity,
-        LocalDateTime updatedAt
+        LocalDateTime updatedAt,
+        InventoryEventType inventoryEventType
 ) {
 }

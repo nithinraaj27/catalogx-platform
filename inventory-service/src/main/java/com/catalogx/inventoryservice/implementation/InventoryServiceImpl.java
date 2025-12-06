@@ -1,11 +1,7 @@
 package com.catalogx.inventoryservice.implementation;
 
+import com.catalogx.inventoryservice.dto.*;
 import com.catalogx.inventoryservice.events.InventoryEventProducer;
-import com.catalogx.inventoryservice.dto.InventoryUpdateEvent;
-import com.catalogx.inventoryservice.dto.InventoryRequest;
-import com.catalogx.inventoryservice.dto.InventoryResponse;
-import com.catalogx.inventoryservice.dto.ReservationRequest;
-import com.catalogx.inventoryservice.dto.ReservationResponse;
 import com.catalogx.inventoryservice.entity.Inventory;
 import com.catalogx.inventoryservice.entity.InventoryReservation;
 import com.catalogx.inventoryservice.exception.DuplicateValueException;
@@ -58,7 +54,8 @@ public class InventoryServiceImpl implements InventoryService {
                         response.totalQuantity(),
                         response.reservedQuantity(),
                         response.availableQuantity(),
-                        response.lastUpdatedAt()
+                        response.lastUpdatedAt(),
+                        InventoryEventType.INVENTORY_CREATED
                 )
         );
 
@@ -94,7 +91,8 @@ public class InventoryServiceImpl implements InventoryService {
                         response.totalQuantity(),
                         response.reservedQuantity(),
                         response.availableQuantity(),
-                        response.lastUpdatedAt()
+                        response.lastUpdatedAt(),
+                        InventoryEventType.INVENTORY_UPDATED
                 )
         );
 
@@ -159,7 +157,8 @@ public class InventoryServiceImpl implements InventoryService {
                         updated.totalQuantity(),
                         updated.reservedQuantity(),
                         updated.availableQuantity(),
-                        updated.lastUpdatedAt()
+                        updated.lastUpdatedAt(),
+                        InventoryEventType.STOCK_RESERVED
                 )
         );
 
@@ -201,7 +200,8 @@ public class InventoryServiceImpl implements InventoryService {
                         updated.totalQuantity(),
                         updated.reservedQuantity(),
                         updated.availableQuantity(),
-                        updated.lastUpdatedAt()
+                        updated.lastUpdatedAt(),
+                        InventoryEventType.STOCK_RELEASED
                 )
         );
 
