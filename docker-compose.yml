@@ -53,6 +53,22 @@ services:
     networks:
       - micro-network
 
+  cart-db:
+    image: postgres:16
+    container_name: cart-db
+    restart: always
+    environment:
+      POSTGRES_USER: cartuser
+      POSTGRES_PASSWORD: cartpass
+      POSTGRES_DB: cartdb
+    ports:
+      - "5437:5432"
+    volumes:
+      - cart_data:/var/lib/postgresql/data
+      - ./cart-service/src/main/resources/db/migration:/docker-entrypoint-initdb.d
+    networks:
+      - micro-network
+
   # ======================
   # KAFKA + ZOOKEEPER
   # ======================
@@ -165,10 +181,33 @@ services:
     networks:
       - micro-network
 
+  # ======================
+  # CART SERVICE
+  # ======================
+  cart-service:
+    build: ./cart-service
+    container_name: cart-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://cart-db:5432/cartdb
+      SPRING_DATASOURCE_USERNAME: cartuser
+      SPRING_DATASOURCE_PASSWORD: cartpass
+
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      - cart-db
+      - kafka
+      - eureka-server
+    ports:
+      - "9004:9004"
+    networks:
+      - micro-network
+
 volumes:
   product_data:
   inventory_data:
   order_data:
+  cart_data:
 
 networks:
   micro-network:

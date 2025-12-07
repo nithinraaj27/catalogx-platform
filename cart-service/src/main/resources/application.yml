@@ -1,0 +1,67 @@
+server:
+  port: 9004
+
+spring:
+  application:
+    name: inventory-service
+  datasource:
+    url: jdbc:postgresql://localhost:5434/cartdb
+    username: cartuser
+    password: cartpass
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: none
+        format_sql: true
+    show-sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  cloud:
+    config:
+      enabled: false
+
+  kafka:
+    bootstrap-servers: localhost:9092
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+      properties:
+        spring.json.add.type.headers: false
+        spring.json.type.mapping: InventoryUpdateEvent:com.catalogx.inventoryservice.dto.InventoryUpdateEvent
+
+    consumer:
+      group-id: cart-service-group
+      auto-offset-reset: earliest
+
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+
+      properties:
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.json.value.default.type: com.catalogx.cartservice.dto.InventoryUpdateEvent
+        spring.json.trusted.packages: "*"
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    hostname: inventory-service
+    prefer-ip-address: false
+    instance-id: ${spring.application.name}:${server.port}
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    com.catalogx.productservice: DEBUG
