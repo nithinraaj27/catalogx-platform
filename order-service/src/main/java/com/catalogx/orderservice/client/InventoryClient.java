@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "inventory-service")
+@FeignClient(name = "inventory-events")
 public interface InventoryClient {
 
     @PostMapping("/api/inventory/reserve")

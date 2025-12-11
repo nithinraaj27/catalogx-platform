@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: inventory-service
+    name: inventory-events
 
   datasource:
     url: jdbc:postgresql://inventory-db:5432/inventorydb
@@ -36,7 +36,7 @@ spring:
         enable.idempotence: false
 
     consumer:
-      group-id: inventory-service-group
+      group-id: inventory-events-group
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
@@ -50,8 +50,8 @@ eureka:
 
   instance:
     prefer-ip-address: false
-    hostname: inventory-service
-    instance-id: inventory-service:${server.port}
+    hostname: inventory-events
+    instance-id: inventory-events:${server.port}
 
 management:
   tracing:

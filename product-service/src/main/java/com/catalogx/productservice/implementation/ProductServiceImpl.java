@@ -1,11 +1,10 @@
 package com.catalogx.productservice.implementation;
 
-import com.catalogx.productservice.dto.AttributeResponse;
-import com.catalogx.productservice.dto.ProductRequest;
-import com.catalogx.productservice.dto.ProductResponse;
+import com.catalogx.productservice.dto.*;
 import com.catalogx.productservice.entity.Category;
 import com.catalogx.productservice.entity.Product;
 import com.catalogx.productservice.entity.ProductAttribute;
+import com.catalogx.productservice.events.ProductEventProducer;
 import com.catalogx.productservice.exception.DuplicateResourceException;
 import com.catalogx.productservice.exception.ResourceAlreadyExistsException;
 import com.catalogx.productservice.exception.ResourceNotFoundException;
@@ -26,6 +25,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ProductEventProducer productEventProducer;
 
     @Override
     public ProductResponse createProduct(ProductRequest productRequest) {
@@ -62,7 +62,11 @@ public class ProductServiceImpl implements ProductService {
         }
 
         Product saved = productRepository.save(product);
-        return toResponse(product);
+
+        productEventProducer.publish(
+                ProductEvent.fromEntity(saved, ProductEventType.PRODUCT_CREATED)
+        );
+        return toResponse(saved);
     }
 
     @Override
@@ -116,6 +120,10 @@ public class ProductServiceImpl implements ProductService {
 
         Product updated = productRepository.save(product);
 
+        productEventProducer.publish(
+                ProductEvent.fromEntity(updated, ProductEventType.PRODUCT_UPDATED)
+        );
+
         return toResponse(updated);
     }
 
@@ -123,10 +131,12 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(Long id) {
 
         log.info("Deleted the product"+ id);
-        if(!productRepository.existsById(id))
-        {
-            throw new ResourceNotFoundException("Product Not found: "+ id);
-        }
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product Not found: " + id));
+
+        productEventProducer.publish(
+                ProductEvent.fromEntity(product,ProductEventType.PRODUCT_DELETED)
+        );
         productRepository.deleteById(id);
     }
 

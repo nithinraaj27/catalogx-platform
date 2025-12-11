@@ -69,7 +69,7 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
 
         log.info("Order id : {}",String.valueOf(order.getOrderId()));
-        log.info("4. Try reserving stock in inventory-service");
+        log.info("4. Try reserving stock in inventory-events");
         ReservationRequest reservationRequest = new ReservationRequest(
                 request.sku(),
                 request.quantity(),

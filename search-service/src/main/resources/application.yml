@@ -1,0 +1,81 @@
+server:
+  port: 9005
+
+spring:
+  application:
+    name: search-events
+
+  # -------------------------
+  # MongoDB (Docker)
+  # -------------------------
+  data:
+    mongodb:
+      # --- DELETE the 'uri' line and use these properties instead ---
+      host: mongo-search
+      port: 27017
+      database: searchdb
+      username: searchuser
+      password: searchpass
+      # -------------------------------------------------------------------------
+      # This is the single most important line to resolve the authentication issue:
+      authentication-database: searchdb
+
+  # -------------------------
+  # Kafka (Docker)
+  # -------------------------
+  kafka:
+    bootstrap-servers: kafka:9092
+
+    consumer:
+      group-id: search-events-group
+      auto-offset-reset: earliest
+
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+      properties:
+        spring.json.use.type.headers: false
+        spring.json.trusted.packages: "com.catalogx.searchservice.dto"
+
+  cloud:
+    config:
+      enabled: false
+
+# -------------------------
+# Eureka Client Config
+# -------------------------
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+  instance:
+    hostname: search-events
+    prefer-ip-address: false
+    instance-id: ${spring.application.name}:${server.port}
+
+# -------------------------
+# Logging
+# -------------------------
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    com.catalogx.searchservice: DEBUG
+
+# -------------------------
+# Actuator / Monitoring
+# -------------------------
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans

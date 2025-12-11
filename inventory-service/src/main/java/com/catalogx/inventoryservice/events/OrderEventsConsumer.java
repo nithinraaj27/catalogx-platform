@@ -19,7 +19,7 @@ public class OrderEventsConsumer {
 
     private final InventoryProjectionRepository inventoryProjectionRepository;
 
-    @KafkaListener(topics = "order-events", groupId = "inventory-service")
+    @KafkaListener(topics = "order-events", groupId = "inventory-events")
     public void handleOrderCreated(OrderEvent event){
         log.info("Recieved OrderCreatedEvent: {}", event);
 

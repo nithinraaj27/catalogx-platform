@@ -4,6 +4,13 @@ server:
 spring:
   application:
     name: product-service
+
+  cloud:
+    config:
+      enabled: false
+      import-check:
+        enabled: false
+
   datasource:
     url: jdbc:postgresql://localhost:5433/productdb
     username: productuser
@@ -14,8 +21,7 @@ spring:
       ddl-auto: none
     properties:
       hibernate:
-        hbm2ddl:
-          auto: none
+        hbm2ddl.auto: none
         format_sql: true
     show-sql: true
 
@@ -24,9 +30,19 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
 
-  cloud:
-    config:
-      enabled: false
+  kafka:
+    bootstrap-servers: localhost:9092
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+        enable.idempotence: false
+
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
 
 eureka:
   client:

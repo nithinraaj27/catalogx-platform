@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: order-service
+    name: order-events
 
   datasource:
     url: jdbc:postgresql://localhost:5436/orderdb
@@ -46,7 +46,7 @@ spring:
         enable.idempotence: false
 
     consumer:
-      group-id: order-service-group
+      group-id: order-events-group
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
@@ -65,6 +65,6 @@ eureka:
       defaultZone: http://localhost:8761/eureka
   instance:
     prefer-ip-address: false
-    hostname: order-service
+    hostname: order-events
     instance-id: ${spring.application.name}:${server.port}
 

@@ -1,8 +1,8 @@
 spring:
   application:
-    name: product-service
+    name: product-events
 
 cloud:
   config:
     uri: http://localhost:8888
-    name: product-service
+    name: product-events

@@ -15,10 +15,10 @@ public class InventoryEventsConsumer {
 
     private final InventoryProjectionRepository inventoryProjectionRepository;
 
-    @KafkaListener(topics = "inventory-events", groupId = "cart-service-group")
+    @KafkaListener(topics = "inventory-events", groupId = "cart-events-group")
     public void consume(InventoryUpdateEvent inventoryUpdateEvent)
     {
-        log.info("Card-service received InventoryUpdateEvent: {}", inventoryUpdateEvent);
+        log.info("Card-events received InventoryUpdateEvent: {}", inventoryUpdateEvent);
 
         InventoryProjection projection = inventoryProjectionRepository.findById(inventoryUpdateEvent.sku())
                 .orElse(InventoryProjection.builder()
@@ -32,6 +32,6 @@ public class InventoryEventsConsumer {
 
         inventoryProjectionRepository.save(projection);
 
-        log.info("Cart-service update projection for {}", inventoryUpdateEvent.sku());
+        log.info("Cart-events update projection for {}", inventoryUpdateEvent.sku());
     }
 }

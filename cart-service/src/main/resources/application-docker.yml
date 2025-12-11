@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: cart-service
+    name: cart-events
 
   datasource:
     url: jdbc:postgresql://cart-db:5432/cartdb
@@ -36,7 +36,7 @@ spring:
         enable.idempotence: false
 
     consumer:
-      group-id: cart-service-group
+      group-id: cart-events-group
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
@@ -50,8 +50,8 @@ eureka:
 
   instance:
     prefer-ip-address: false
-    hostname: cart-service
-    instance-id: cart-service:${server.port}
+    hostname: cart-events
+    instance-id: cart-events:${server.port}
 
 management:
   tracing:

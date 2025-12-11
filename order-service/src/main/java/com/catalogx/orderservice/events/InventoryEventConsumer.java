@@ -18,7 +18,7 @@ public class InventoryEventConsumer {
 
     private final InventoryProjectionRepository inventoryProjectionRepository;
 
-    @KafkaListener(topics = "inventory-events", groupId = "order-service")
+    @KafkaListener(topics = "inventory-events", groupId = "order-events")
     public void consume(InventoryUpdateEvent updateEvent)
     {
         log.info("Recieved InventoryUpdateEvent {} "+ updateEvent);

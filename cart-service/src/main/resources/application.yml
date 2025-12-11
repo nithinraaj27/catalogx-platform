@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: inventory-service
+    name: inventory-events
   datasource:
     url: jdbc:postgresql://localhost:5434/cartdb
     username: cartuser
@@ -40,7 +40,7 @@ spring:
         spring.json.type.mapping: InventoryUpdateEvent:com.catalogx.inventoryservice.dto.InventoryUpdateEvent
 
     consumer:
-      group-id: cart-service-group
+      group-id: cart-events-group
       auto-offset-reset: earliest
 
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -56,7 +56,7 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka
   instance:
-    hostname: inventory-service
+    hostname: inventory-events
     prefer-ip-address: false
     instance-id: ${spring.application.name}:${server.port}
 

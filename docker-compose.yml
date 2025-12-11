@@ -17,7 +17,7 @@ services:
       - "5433:5432"
     volumes:
       - product_data:/var/lib/postgresql/data
-      - ./product-service/src/main/resources/db/migration:/docker-entrypoint-initdb.d
+      - ./product-events/src/main/resources/db/migration:/docker-entrypoint-initdb.d
     networks:
       - micro-network
 
@@ -33,7 +33,7 @@ services:
       - "5434:5432"
     volumes:
       - inventory_data:/var/lib/postgresql/data
-      - ./inventory-service/src/main/resources/db/migration:/docker-entrypoint-initdb.d
+      - ./inventory-events/src/main/resources/db/migration:/docker-entrypoint-initdb.d
     networks:
       - micro-network
 
@@ -49,7 +49,7 @@ services:
       - "5436:5432"
     volumes:
       - order_data:/var/lib/postgresql/data
-      - ./order-service/src/main/resources/db/migration:/docker-entrypoint-initdb.d
+      - ./order-events/src/main/resources/db/migration:/docker-entrypoint-initdb.d
     networks:
       - micro-network
 
@@ -65,9 +65,45 @@ services:
       - "5437:5432"
     volumes:
       - cart_data:/var/lib/postgresql/data
-      - ./cart-service/src/main/resources/db/migration:/docker-entrypoint-initdb.d
+      - ./cart-events/src/main/resources/db/migration:/docker-entrypoint-initdb.d
     networks:
       - micro-network
+
+  # ======================
+  # MONGO DB FOR SEARCH
+  # ======================
+  mongo-search:
+    image: mongo:7.0
+    container_name: mongo-search
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpass
+      MONGO_INITDB_DATABASE: searchdb
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_search_data:/data/db
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
+    networks:
+      - micro-network
+
+
+  # ======================
+  # ELASTICSEARCH
+  # ======================
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    networks:
+      - micro-network
+
 
   # ======================
   # KAFKA + ZOOKEEPER
@@ -95,6 +131,8 @@ services:
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_DELETE_TOPIC_ENABLE: "true"
     depends_on:
       - zookeeper
     networks:
@@ -203,11 +241,37 @@ services:
     networks:
       - micro-network
 
+  # ======================
+  # SEARCH SERVICE
+  # ======================
+  search-service:
+    build: ./search-service
+    container_name: search-service
+    environment:
+      SPRING_DATA_MONGODB_HOST: mongo-search
+      SPRING_DATA_MONGODB_PORT: 27017
+      SPRING_DATA_MONGODB_DATABASE: searchdb
+      SPRING_DATA_MONGODB_USERNAME: searchuser
+      SPRING_DATA_MONGODB_PASSWORD: searchpass
+      SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE: searchdb
+
+    depends_on:
+      - mongo-search
+      - kafka
+      - eureka-server
+
+    ports:
+      - "9005:9005"
+    networks:
+      - micro-network
+
+
 volumes:
   product_data:
   inventory_data:
   order_data:
   cart_data:
+  mongo_search_data:
 
 networks:
   micro-network:
