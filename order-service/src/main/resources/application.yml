@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: order-events
+    name: order-service
 
   datasource:
     url: jdbc:postgresql://localhost:5436/orderdb
@@ -59,12 +59,21 @@ spring:
       missing-topics-fatal: false
 
 
+jwt:
+  secret: "catalogx-super-secret-key-should-be-long"
+  expiration: 86400000
+
+
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
   instance:
     prefer-ip-address: false
-    hostname: order-events
+    hostname: order-service
     instance-id: ${spring.application.name}:${server.port}
 
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs/order

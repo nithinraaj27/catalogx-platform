@@ -63,6 +63,11 @@ eureka:
     hostname: product-service
     instance-id: product-service:${server.port}
 
+jwt:
+  secret: "catalogx-super-secret-key-should-be-long"
+  expiration: 86400000
+
+
 management:
   tracing:
     enabled: true
@@ -83,3 +88,7 @@ logging:
     root: INFO
     org.springframework.web: DEBUG
     com.catalogx.productservice: DEBUG
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs/product

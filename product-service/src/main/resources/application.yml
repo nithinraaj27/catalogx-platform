@@ -44,6 +44,11 @@ spring:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
 
+jwt:
+  secret: "catalogx-super-secret-key-should-be-long"
+  expiration: 86400000
+
+
 eureka:
   client:
     service-url:
@@ -54,3 +59,8 @@ logging:
     root: INFO
     org.springframework.web: DEBUG
     com.catalogx.productservice: DEBUG
+
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs/product

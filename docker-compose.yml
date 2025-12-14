@@ -3,7 +3,7 @@ version: "3.8"
 services:
 
   # ======================
-  # DATABASES
+  # DATABASES (No changes here)
   # ======================
   product-db:
     image: postgres:16
@@ -70,7 +70,7 @@ services:
       - micro-network
 
   # ======================
-  # MONGO DB FOR SEARCH
+  # MONGO DB FOR SEARCH (No changes here)
   # ======================
   mongo-search:
     image: mongo:7.0
@@ -88,25 +88,8 @@ services:
     networks:
       - micro-network
 
-
   # ======================
-  # ELASTICSEARCH
-  # ======================
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
-    container_name: elasticsearch
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
-    ports:
-      - "9200:9200"
-    networks:
-      - micro-network
-
-
-  # ======================
-  # KAFKA + ZOOKEEPER
+  # KAFKA + ZOOKEEPER (No changes here)
   # ======================
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
@@ -139,7 +122,7 @@ services:
       - micro-network
 
   # ======================
-  # EUREKA SERVER
+  # EUREKA SERVER (No changes here)
   # ======================
   eureka-server:
     build: ./eureka-server
@@ -148,6 +131,12 @@ services:
       - "8761:8761"
     networks:
       - micro-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8761/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
 
   # ======================
   # PRODUCT SERVICE
@@ -162,6 +151,11 @@ services:
 
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
+      # *** JWT Security Keys ***
+      JWT_SECRET: catalogx-super-secret-key-should-be-long-enough-for-hs256
+      JWT_EXPIRATION: 3600000
+      # *************************
 
     depends_on:
       - product-db
@@ -187,6 +181,12 @@ services:
 
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
+      # *** JWT Security Keys ***
+      JWT_SECRET: catalogx-super-secret-key-should-be-long-enough-for-hs256
+      JWT_EXPIRATION: 3600000
+      # *************************
+
     depends_on:
       - inventory-db
       - kafka
@@ -209,6 +209,12 @@ services:
 
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
+      # *** JWT Security Keys ***
+      JWT_SECRET: catalogx-super-secret-key-should-be-long-enough-for-hs256
+      JWT_EXPIRATION: 3600000
+      # *************************
+
     depends_on:
       - order-db
       - kafka
@@ -232,6 +238,12 @@ services:
 
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
+      # *** JWT Security Keys ***
+      JWT_SECRET: catalogx-super-secret-key-should-be-long-enough-for-hs256
+      JWT_EXPIRATION: 3600000
+      # *************************
+
     depends_on:
       - cart-db
       - kafka
@@ -255,6 +267,14 @@ services:
       SPRING_DATA_MONGODB_PASSWORD: searchpass
       SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE: searchdb
 
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
+      # *** JWT Security Keys ***
+      JWT_SECRET: catalogx-super-secret-key-should-be-long-enough-for-hs256
+      JWT_EXPIRATION: 3600000
+      # *************************
+
     depends_on:
       - mongo-search
       - kafka
@@ -262,6 +282,29 @@ services:
 
     ports:
       - "9005:9005"
+    networks:
+      - micro-network
+
+  # ======================
+  # API GATEWAY SERVICE
+  # ======================
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+
+      # *** JWT Security Keys ***
+      JWT_SECRET: catalogx-super-secret-key-should-be-long-enough-for-hs256
+      JWT_EXPIRATION: 3600000
+      # *************************
+
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    ports:
+      - "9000:9000"
     networks:
       - micro-network
 

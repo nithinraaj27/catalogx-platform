@@ -4,6 +4,7 @@ import com.catalogx.productservice.dto.APIResponse;
 import com.catalogx.productservice.dto.CategoryRequest;
 import com.catalogx.productservice.dto.CategoryResponse;
 import com.catalogx.productservice.service.CategoryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Categories", description = "Category Management APIs")
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor

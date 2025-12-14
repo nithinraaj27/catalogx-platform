@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY target/*.jar app.jar
 
-EXPOSE 9004
+EXPOSE 9000
 
 ENV SPRING_PROFILES_ACTIVE=docker
 

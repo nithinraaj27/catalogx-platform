@@ -22,12 +22,12 @@
     <description>First Complete Microservice Project</description>
     <modules>
         <module>eureka-server</module>
-        <module>config-server</module>
         <module>product-service</module>
         <module>inventory-service</module>
         <module>order-service</module>
         <module>cart-service</module>
         <module>search-service</module>
+        <module>api-gateway</module>
     </modules>
 
     <properties>

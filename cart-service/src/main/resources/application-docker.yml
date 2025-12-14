@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: cart-events
+    name: cart-service
 
   datasource:
     url: jdbc:postgresql://cart-db:5432/cartdb
@@ -43,6 +43,11 @@ spring:
       properties:
         spring.json.trusted.packages: "*"
 
+jwt:
+  secret: "catalogx-super-secret-key-should-be-long"
+  expiration: 86400000
+
+
 eureka:
   client:
     service-url:
@@ -50,8 +55,8 @@ eureka:
 
   instance:
     prefer-ip-address: false
-    hostname: cart-events
-    instance-id: cart-events:${server.port}
+    hostname: cart-service
+    instance-id: cart-service:${server.port}
 
 management:
   tracing:
@@ -67,3 +72,8 @@ management:
     web:
       exposure:
         include: health,info,prometheus
+
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs/cart

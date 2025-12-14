@@ -4,6 +4,7 @@ import com.catalogx.inventoryservice.dto.*;
 import com.catalogx.inventoryservice.service.InventoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/inventory")
 @RequiredArgsConstructor
+@Slf4j
 public class InventoryController {
 
     private final InventoryService inventoryService;
@@ -40,8 +42,10 @@ public class InventoryController {
         return ResponseEntity.ok(APIResponse.success("All Inventory Fetched", inventoryService.getAllInventory()));
     }
 
-    @PostMapping("/reserve")
+    @PostMapping(value = "/reserve", consumes = "application/json",
+            produces = "application/json")
     public ResponseEntity<APIResponse<ReservationResponse>> reserve(@Valid @RequestBody ReservationRequest request){
+        log.info("Reserve API called with request = {}", request);
         return ResponseEntity.ok(APIResponse.success("Stock Reserved Successfully",inventoryService.reserveStock(request)));
     }
 

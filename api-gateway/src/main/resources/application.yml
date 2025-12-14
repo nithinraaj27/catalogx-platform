@@ -1,0 +1,164 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: api-gateway
+    web-application-type: reactive
+    allow-bean-definition-overriding: true
+
+  cloud:
+    gateway:
+
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+      routes:
+
+        # =================================================
+        # BUSINESS API ROUTES (JWT PROTECTED)
+        # =================================================
+
+        - id: product-service
+          uri: lb://product-service
+          predicates:
+            - Path=/api/products/**
+          filters:
+            - name: JwtAuthFilter
+
+        - id: category-service
+          uri: lb://product-service
+          predicates:
+            - Path=/api/categories/**
+          filters:
+            - name: JwtAuthFilter
+
+        - id: inventory-service
+          uri: lb://inventory-service
+          predicates:
+            - Path=/api/inventory/**
+          filters:
+            - name: JwtAuthFilter
+
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/api/orders/**
+          filters:
+            - name: JwtAuthFilter
+
+        - id: cart-service
+          uri: lb://cart-service
+          predicates:
+            - Path=/api/cart/**
+          filters:
+            - name: JwtAuthFilter
+
+        - id: search-service
+          uri: lb://search-service
+          predicates:
+            - Path=/api/search/**
+          filters:
+            - name: JwtAuthFilter
+
+
+        # =================================================
+        # OPENAPI DOC ROUTES (NO JWT — REQUIRED)
+        # =================================================
+
+        - id: product-api-docs
+          uri: lb://product-service
+          predicates:
+            - Path=/v3/api-docs/product
+
+        - id: inventory-api-docs
+          uri: lb://inventory-service
+          predicates:
+            - Path=/v3/api-docs/inventory
+
+        - id: order-api-docs
+          uri: lb://order-service
+          predicates:
+            - Path=/v3/api-docs/order
+
+        - id: cart-api-docs
+          uri: lb://cart-service
+          predicates:
+            - Path=/v3/api-docs/cart
+
+        - id: search-api-docs
+          uri: lb://search-service
+          predicates:
+            - Path=/v3/api-docs/search
+
+    # 🔴 IMPORTANT — prevents duplicate API execution
+    loadbalancer:
+      retry:
+        enabled: false
+
+    # ✅ Correct place (NOT under gateway)
+    discovery:
+      client:
+        health-indicator:
+          enabled: true
+
+
+# =================================================
+# SWAGGER UI (AGGREGATED — ONLY HERE)
+# =================================================
+springdoc:
+  swagger-ui:
+    path: /swagger-ui/index.html
+    urls:
+      - name: Product APIs
+        url: /v3/api-docs/product
+
+      - name: Category APIs
+        url: /v3/api-docs/product
+
+      - name: Inventory APIs
+        url: /v3/api-docs/inventory
+
+      - name: Order APIs
+        url: /v3/api-docs/order
+
+      - name: Cart APIs
+        url: /v3/api-docs/cart
+
+      - name: Search APIs
+        url: /v3/api-docs/search
+
+
+# =================================================
+# EUREKA (handles slow startup)
+# =================================================
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+
+  instance:
+    prefer-ip-address: false
+    hostname: api-gateway
+    instance-id: api-gateway:${server.port}
+
+
+# =================================================
+# JWT
+# =================================================
+jwt:
+  secret: "catalogx-super-secret-key-should-be-long"
+  expiration: 86400000
+
+
+# =================================================
+# LOGGING
+# =================================================
+logging:
+  level:
+    root: INFO
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.security: DEBUG
+    io.jsonwebtoken: DEBUG

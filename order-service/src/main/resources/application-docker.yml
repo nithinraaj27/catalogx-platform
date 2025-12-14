@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: order-events
+    name: order-service
 
   datasource:
     url: jdbc:postgresql://order-db:5432/orderdb
@@ -60,8 +60,13 @@ eureka:
 
   instance:
     prefer-ip-address: false
-    hostname: order-events
-    instance-id: order-events:${server.port}
+    hostname: order-service
+    instance-id: order-service:${server.port}
+
+jwt:
+  secret: "catalogx-super-secret-key-should-be-long"
+  expiration: 86400000
+
 
 management:
   tracing:
@@ -77,3 +82,7 @@ management:
     web:
       exposure:
         include: health,info,prometheus
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs/order

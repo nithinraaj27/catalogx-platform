@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: inventory-events
+    name: cart-service
   datasource:
     url: jdbc:postgresql://localhost:5434/cartdb
     username: cartuser
@@ -51,12 +51,17 @@ spring:
         spring.json.value.default.type: com.catalogx.cartservice.dto.InventoryUpdateEvent
         spring.json.trusted.packages: "*"
 
+jwt:
+  secret: "catalogx-super-secret-key-should-be-long"
+  expiration: 86400000
+
+
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
   instance:
-    hostname: inventory-events
+    hostname: cart-service
     prefer-ip-address: false
     instance-id: ${spring.application.name}:${server.port}
 
@@ -65,3 +70,7 @@ logging:
     root: INFO
     org.springframework.web: DEBUG
     com.catalogx.productservice: DEBUG
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs/cart
