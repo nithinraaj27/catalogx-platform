@@ -1,0 +1,737 @@
+{
+	"info": {
+		"_postman_id": "d69c8609-bad9-4252-8ffd-a7c822e28c13",
+		"name": "CatalogX",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "18649116"
+	},
+	"item": [
+		{
+			"name": "ProductService",
+			"item": [
+				{
+					"name": "Category",
+					"item": [
+						{
+							"name": "getAllCategory",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{JWT_TOKEN}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Iphone 17P\",\n    \"description\": \"A great phone\",\n    \"price\": 699.99,\n    \"sku\": \"SKU-SMART-001P\",\n    \"categoryId\": 1,\n    \"attributes\": [\n        {\n            \"key\": \"color\",\n            \"value\": \"black\"\n        },\n        {\n            \"key\": \"storage\",\n            \"value\": \"256GB\"\n        },\n        {\n            \"key\": \"color\",\n            \"value\": \"black\"\n        },\n        {\n            \"key\": \"storage\",\n            \"value\": \"256GB\"\n        }\n    ],\n    \"createdAt\": \"2025-11-29T04:30:52.003971\",\n    \"updatedAt\": \"2025-11-29T04:30:52.003971\"\n}"
+								},
+								"url": {
+									"raw": "{{api-gateway}}/api/categories",
+									"host": [
+										"{{api-gateway}}"
+									],
+									"path": [
+										"api",
+										"categories"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": null,
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getCategory",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{category}}/api/categories/1"
+							},
+							"response": []
+						},
+						{
+							"name": "New Request",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"SmartPhones\",\n    \"description\": \"Smart Mobiles\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{api-gateway}}/api/categories"
+							},
+							"response": []
+						},
+						{
+							"name": "New Request",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{api-gateway}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"SmartPhones\",\n    \"description\": \"Smart Phones\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{api-gateway}}/api/categories/4"
+							},
+							"response": []
+						},
+						{
+							"name": "New Request",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{JWT_TOKEN}}",
+										"type": "text"
+									}
+								],
+								"url": "{{api-gateway}}/api/categories/4"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "getProduct",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": "{{api-gateway}}/api/products/2"
+					},
+					"response": []
+				},
+				{
+					"name": "getAllProducts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": "{{api-gateway}}/api/products"
+					},
+					"response": []
+				},
+				{
+					"name": "addProduct",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Coffee Maker\",\n    \"description\": \"Automatic coffee machine\",\n    \"price\": 199.00,\n    \"sku\": \"SKU-3004\",\n    \"categoryId\": 3,\n    \"attributes\": [],\n    \"createdAt\": \"2025-12-11T20:04:16.483661\",\n    \"updatedAt\": \"2025-12-11T20:04:16.483661\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{api-gateway}}/api/products"
+					},
+					"response": []
+				},
+				{
+					"name": "updateProduct",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"iPhone 17 Pro\",\n    \"description\": \"Comfortable cotton\",\n    \"price\": 19.99,\n    \"sku\": \"SKU-IPP17P\",\n    \"categoryId\": 2,\n    \"attributes\": [\n        {\n            \"key\": \"Color\",\n            \"value\": \"Black\"\n        },\n        {\n            \"key\": \"Storage\",\n            \"value\": \"256GB\"\n        },\n        {\n            \"key\": \"Camera\",\n            \"value\": \"48MP\"\n        }\n    ],\n    \"createdAt\": \"2025-11-29T04:34:56.628549\",\n    \"updatedAt\": \"2025-11-29T04:34:56.628549\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{api-gateway}}/api/products/1"
+					},
+					"response": []
+				},
+				{
+					"name": "deleteMapping",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": "{{api-gateway}}/api/products/1"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "InventoryService",
+			"item": [
+				{
+					"name": "getAllInventory",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": "{{api-gateway}}/api/inventory"
+					},
+					"response": []
+				},
+				{
+					"name": "getInventory",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": "{{api-gateway}}/api/inventory/SKU-1001"
+					},
+					"response": []
+				},
+				{
+					"name": "createInventory",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sku\": \"SKU-1007\",\n    \"totalQuantity\": 10,\n    \"reservedQuantity\": 0,\n    \"availableQuantity\": 10,\n    \"lastUpdatedAt\": \"2025-11-29T17:51:23.726599\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{api-gateway}}/api/inventory"
+					},
+					"response": []
+				},
+				{
+					"name": "reserve",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sku\": \"SKU-1001\",\n    \"quantity\": 1,\n    \"orderId\": \"5\"\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{api-gateway}}/api/inventory/reserve"
+					},
+					"response": []
+				},
+				{
+					"name": "Release",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{api-gateway}}/api/inventory/release/SKU-1001?quantity=1",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"inventory",
+								"release",
+								"SKU-1001"
+							],
+							"query": [
+								{
+									"key": "quantity",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateInventory",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"sku\": \"SKU-1001\",\n        \"totalQuantity\": 200,\n        \"reservedQuantity\": 0,\n        \"availableQuantity\": 0,\n        \"lastUpdatedAt\": \"2025-12-02T03:03:02.964981\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{api-gateway}}/api/inventory/update"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "OrderService",
+			"item": [
+				{
+					"name": "getAllOrders",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": "{{api-gateway}}/api/orders"
+					},
+					"response": []
+				},
+				{
+					"name": "getOrder",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": "{{api-gateway}}/api/orders/1"
+					},
+					"response": []
+				},
+				{
+					"name": "addOrders",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"orderId\": 10,\n    \"sku\": \"SKU-1001\",\n    \"quantity\": 2,\n    \"status\": \"PENDING\",\n    \"createdAt\": \"2025-12-02T15:19:50.119554\",\n    \"updatedAt\": \"2025-12-02T15:19:50.119554\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{api-gateway}}/api/orders"
+					},
+					"response": []
+				},
+				{
+					"name": "updateStatus",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{api-gateway}}/api/orders/1/status?status=COMPLETED",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"orders",
+								"1",
+								"status"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "COMPLETED"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CartService",
+			"item": [
+				{
+					"name": "getUsercart",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": "{{api-gateway}}/api/cart/userB"
+					},
+					"response": []
+				},
+				{
+					"name": "addToCart",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"368aaf57-a610-4795-8fe0-edbe818e7f16\",\n    \"sku\": \"SKU-1001\",\n    \"quantity\": 9,\n    \"price\": 599.0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{api-gateway}}/api/cart/userB/items"
+					},
+					"response": []
+				},
+				{
+					"name": "removeFromCart",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": "{{api-gateway}}/api/cart/userB/items/SKU-1005"
+					},
+					"response": []
+				},
+				{
+					"name": "updateCart",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"368aaf57-a610-4795-8fe0-edbe818e7f16\",\n    \"sku\": \"SKU-1005\",\n    \"quantity\": 6,\n    \"price\": 599.0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{api-gateway}}/api/cart/userB/items"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "search-service",
+			"item": [
+				{
+					"name": "searchProducts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{api-gateway}}/api/search/products?keyword=coffee",
+							"host": [
+								"{{api-gateway}}"
+							],
+							"path": [
+								"api",
+								"search",
+								"products"
+							],
+							"query": [
+								{
+									"key": "keyword",
+									"value": "coffee"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getProductById",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": "{{api-gateway}}/api/search/products/id/8"
+					},
+					"response": []
+				},
+				{
+					"name": "getProductBySku",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": "{{api-gateway}}/api/search/products/sku/SKU-3004"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "API-Gateway",
+			"item": [
+				{
+					"name": "Token",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code !== 200) {",
+									"    console.log(\"Login failed\");",
+									"    return;",
+									"}",
+									"",
+									"const body = pm.response.json();",
+									"",
+									"pm.collectionVariables.set(\"JWT_TOKEN\", body.token);",
+									"",
+									"console.log(\"JWT_TOKEN saved:\", body.token);",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"testuser@example.com\",\n    \"password\": \"yourpassword\"\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:9000/auth/login"
+					},
+					"response": []
+				},
+				{
+					"name": "getProducts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}"
+							}
+						],
+						"url": "localhost:9000/api/products"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "product-service",
+			"value": ""
+		},
+		{
+			"key": "inventory-service",
+			"value": ""
+		},
+		{
+			"key": "order-service",
+			"value": ""
+		},
+		{
+			"key": "JWT_TOKEN",
+			"value": ""
+		},
+		{
+			"key": "api-gateway",
+			"value": ""
+		}
+	]
+}
