@@ -122,7 +122,7 @@ Included containers:
 
 ### 1️⃣ Clone the Repository
 ```bash
-git clone <repository-url>
+git clone git@github.com:nithinraaj27/catalogx-platform.git
 cd catalogx-platform
 ```
 
